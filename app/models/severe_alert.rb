@@ -1,0 +1,2 @@
+class SevereAlert < ApplicationRecord
+end
