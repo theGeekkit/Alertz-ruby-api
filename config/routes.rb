@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  resources :severe_alerts
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Define a custom route for weather alerts
+  get '/severe_alerts/:location', to: 'severe_alerts#show'
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  # Other routes...
+
+  # If you still want to keep the RESTful routes for severe_alerts resource
+  resources :severe_alerts
 end

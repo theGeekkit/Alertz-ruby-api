@@ -10,6 +10,8 @@ class SevereAlertsController < ApplicationController
 
   # GET /severe_alerts/1
   def show
+    location = params[:location]
+    alerts = fetch_severe_alerts(location)
     render json: @severe_alert
   end
 
@@ -47,5 +49,18 @@ class SevereAlertsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def severe_alert_params
       params.fetch(:severe_alert, {})
+    end
+    
+    def fetch_severe_alerts(location)
+      base_url = "https://api.weather.gov/alerts/active"
+      url = "#{base_url}?area=#{URI.encode(location)}"
+      
+      response = Excon.get(url)
+      
+      if response.status == 200
+        JSON.parse(response.body)
+      else
+        { error: "Failed to fetch severe alerts" }
+      end
     end
 end
