@@ -1,3 +1,7 @@
+require 'net/http'
+require 'uri'
+
+
 class SevereAlertsController < ApplicationController
   before_action :set_severe_alert, only: %i[ show update destroy ]
 
@@ -54,10 +58,22 @@ class SevereAlertsController < ApplicationController
     def fetch_severe_alerts(location)
       base_url = "https://api.weather.gov/alerts/active"
       url = "#{base_url}?area=#{URI.encode(location)}"
-      
-      response = Excon.get(url)
-      
-      if response.status == 200
+    
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true # Use HTTPS
+    
+      headers = {
+        'User-Agent' => 'YourApp',
+        'Accept' => 'application/json',
+        'Authorization' => 'Bearer YOUR_API_KEY'
+      }
+    
+      request = Net::HTTP::Get.new(uri.request_uri, headers)
+    
+      response = http.request(request)
+    
+      if response.is_a?(Net::HTTPSuccess)
         JSON.parse(response.body)
       else
         { error: "Failed to fetch severe alerts" }
