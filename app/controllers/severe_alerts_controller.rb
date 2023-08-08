@@ -12,7 +12,7 @@ class SevereAlertsController < ApplicationController
   def show
     location = params[:location]
     alerts = fetch_severe_alerts(location)
-    render json: @severe_alert
+    render json: alerts  # Fixed this line to render alerts instead of @severe_alert
   end
 
   # POST /severe_alerts
